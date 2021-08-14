@@ -22,4 +22,3 @@ def login():
 @auth.route('/sign-up')
 def create_user():
     return render_template("newuser.html")
-
