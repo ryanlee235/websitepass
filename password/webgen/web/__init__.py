@@ -1,24 +1,35 @@
-from flask import Flask, Blueprint
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from os import path
-#creating the database
+from flask_login import LoginManager
+
 db = SQLAlchemy()
-#giving the database a name
-DB_NAME = 'database.db'
-#creating the app
+DB_NAME = "database.db"
+
+
 def create_app():
-    #this creates a flask application
     app = Flask(__name__)
-    #configures a secret key for security reasons
-    app.config['SECRET_KEY'] ='jfadsl;ksdapoi'
-    app.config['SQLALCHEMY_DATABASE_URL'] = f'sqlite://{DB_NAME}'
+    app.config['SECRET_KEY'] = "helloworld"
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     db.init_app(app)
-    #importing the blue prints from the view and auth files
-    from .views import views 
+
+    from .views import views
     from .auth import auth
-    #initializing the blueprints for both of the files
-    app.register_blueprint(views, url_prefix='/')
-    app.register_blueprint(auth, url_prefix='/')
+
+    app.register_blueprint(views, url_prefix="/")
+    app.register_blueprint(auth, url_prefix="/")
+
+    from .models import User
+
+    create_database(app)
+
+    login_manager = LoginManager()
+    login_manager.login_view = "auth.login"
+    login_manager.init_app(app)
+
+    @login_manager.user_loader
+    def load_user(id):
+        return User.query.get(int(id))
 
     return app
 
