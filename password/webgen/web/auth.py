@@ -16,54 +16,27 @@ def login():
         email = request.form.get("email")
         password = request.form.get("password")
 
-        user = User.query.filter_by(email=email)
 
-        if user:
-            if check_password_hash(user.Passwords,password):
-                flash("login successful!", category='success')
-                login_user(user,remember=True)
-                return redirect(url_for("home.html"))
-            else:
-                flash("password is incorrect", category='error')
-        else:
-            flash("incorrect email !", category='error')
-    return render_template("login.html", user=current_user)
-        
-
-
-@auth.route("/newuser", methods = ["GET", "POST"])
-def new_user():
-
-    if request.method == "POST":
-        email = request.form.get("email")
-        username = request.form.get("username")
-        password1 = request.form.get('password1')
-        password2=request.form.get("password2")
-
-        email_exist = User.query.filter_by(email=email).first()
-        username_exist = User.query.filter_by(username=username).first()
+        email_exist = User.query.first(email=email)
+        password_exist = User.query(password= password)
 
         if email_exist:
-            flash("email already exist! ", category="error")
-        elif username_exist:
-            flash("username already exist! ", category='error')
-        elif password1 != password2:
-            flash("password does not match!",category='error')
-        elif password1 < 6:
-            flash("password not long enough!", category='error')
-        elif email < 4:
-            flash("email is not vaild!", category="error")
-        elif username < 2:
-            flash("username not long enough!", category="error")
+            if password_exist:
+                flash("Succefully logged in!", category="success")
+            else:
+                flash("email or password incorrect!",category ='error')
 
-        else:
-            new_user = User(emal= email, username= username, password= generate_password_hash(password1 ,method="sha256"))
+    return render_template("login.html")
 
-            db.session.add(new_user)
-            db.session.commit()
-            return redirect(url_for("home.html"))
+   
 
-    return render_template("newuser.html", user = current_user)
+
+    
+@auth.route("/newuser", methods = ["GET", "POST"])
+def new_user():
+    pass
+
+
 
 @auth.route("/logout")
 @login_required
