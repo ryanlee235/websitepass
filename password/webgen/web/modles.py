@@ -7,6 +7,7 @@ class User(db.Model):
     email = db.Column( db.String(100), unique =True)
     username= db.Column(db.String(100), unique =True)
     Passwords = db.Column(db.String(100))
+    
 
 
 
@@ -14,4 +15,5 @@ class Passwords(db.Model):
     id = db.Column("id", db.Integer, primary_key=True)
     website = db.Column("website", db.String(100))
     password = db.Column("Password1", db.String(200))
+    
 
