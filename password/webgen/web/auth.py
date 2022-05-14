@@ -75,7 +75,7 @@ def new_user():
             #have to commit the change so the change takes place
             db.session.commit()
 
-            return url_for("user.html")
+            
     
     return render_template("newuser.html",user= current_user)
 

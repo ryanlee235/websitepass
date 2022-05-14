@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash
+from flask import Blueprint, render_template, request, flash, url_for
 from flask_login import login_required, current_user
 from .models import User, Passwords
 from. import db
@@ -6,9 +6,11 @@ import random
 import os 
 views = Blueprint('views',__name__)
 @views.route('/')
-@views.route('/home')
+@views.route('/home', methods=['GET','POST'])
 # home will display our user info, this will also  display the passwords for the user and website they are using for the passwords
 def home():
+    if request.method == "POST":
+        return render_template('newuser.html',user=current_user)
     return render_template('home.html', user= current_user)
 
 @views.route("/generate")

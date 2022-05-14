@@ -22,7 +22,8 @@ body{
     background-color:#4eb5f1;
     text-align: center;
     transition:all 0.2s;
-    margin-left:10%;
+    margin-left: 15%;
+    
     
 }
 .btn:hover{
@@ -37,9 +38,13 @@ body{
     }
 }
 .parent{
+    margin:auto;
     width: 100%;
     height: 100%;
     align-items:center;
+    justify-content: center;
+    margin-left: 30%;
+    margin-top: -10%;
     
 }
 .box{
@@ -64,9 +69,4 @@ body{
     font-size: 20px;
     
 
-}
-
-.image{
-    height: 100%;
-    width: 100%;
 }
