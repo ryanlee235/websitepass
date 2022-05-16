@@ -1,31 +1,11 @@
 {% extends "base.html" %}{% block title%}{% endblock %}{% block content%}
-
-<head>
-    <title>Home</title>
-    <link
-      href="{{url_for('static', filename='styles/home.css')}}" 
-      rel="stylesheet"
-    />
-</head>
-<body>
-    <main>
-        <div class='parent'>
-            <div class='box'>
-                <h1>Generate your<br>password today</h1>
-            </div>
-            <div class ='p-text'>
-                <p>Create, secure, and easy to access <br> all your passwords.</p>
-            </div>
-            
-            <form method="POST" >
-                <button class="btn" type="submit" >Start Now</button>
-                    
-            </form>
-            
-               
-                
-        </div>
-    </main>
-</body>
+<form>
+    <div class="mb-3">
+      <label for="exampleInputEmail1" class="form-label">Website</label>
+      <input type="text" class="form-control" id="website" aria-describedby="emailHelp">
+      <div id="emailHelp" class="form-text">Enter website name to generate password.</div>
+    </div>
+    <button type="submit" class="btn btn-primary">Generate</button>
+  </form>
 
 {% endblock %}

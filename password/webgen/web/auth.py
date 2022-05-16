@@ -1,11 +1,12 @@
 from operator import ge
+from re import I
 from flask import Blueprint, request, session, url_for, flash
 from flask.templating import render_template
 from sqlalchemy.sql.functions import user
 from werkzeug.utils import redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
-from .models import User
+from .models import User, Passwords
 from flask_login import login_user,logout_user,login_required, current_user
 #setting up blueprint
 auth = Blueprint('auth', __name__)
@@ -78,10 +79,6 @@ def new_user():
             
     
     return render_template("newuser.html",user= current_user)
-
-    
-
-
 
 
 @auth.route("/logout")

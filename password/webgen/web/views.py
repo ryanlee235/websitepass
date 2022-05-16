@@ -5,44 +5,46 @@ from. import db
 import random 
 import os 
 views = Blueprint('views',__name__)
-@views.route('/')
-@views.route('/home', methods=['GET','POST'])
-# home will display our user info, this will also  display the passwords for the user and website they are using for the passwords
-def home():
-    return render_template('login.html', user= current_user)
+
 
 @views.route("/generate")
 
 def userinfo():
     return render_template('generate.html')
-
-@views.route('/create-password',methods = ['GET','POST'])
+@views.route('/')
+@views.route('/home',methods = ['GET','POST'])
 def generate_password():
     if request.method == "POST":
         website = request.form.get('website')
 
         
         website_exists = Passwords.query.filter_by(website=website).first()
-        if website_exists:
+        if len(website_exists) < 1:
+            flash("Enter website name to generate password",category="error")
+        elif website_exists:
             upper_letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
             lower_letters = upper_letters.lower()
             symbols ='!@#$%^&*()?<>/:;'
             num = '12345678'
 
-            all=""
+           
             all = upper_letters + lower_letters +symbols + num
-            amount = 1
+            
             length = 12
+    
+            
+            password = ''.join(random.sample(all,length))
                 
+            new_password = Passwords(Passwords=password,website=website)
+                
+            db.session.add(new_password)
+            db.session.commit()
+            flash("password successfully added!")
 
-            for x in range(amount):
-                password = ''.join(random.sample(all,length))
-                
-                new_password = Passwords(Passwords=password)
-                
-                db.session.add(new_password)
-                db.session.commit()
-                flash("password successfully added!")
+    return render_template("home.html",user=current_user)
+
+
+
 
 
 @views.route('/delete-password/<id>')
@@ -57,10 +59,4 @@ def delete():
         db.session.delete(password)
         db.session.commit()
         flash("password successfully deleted! ")
-
-@views.route('/website-name/<website>', methods = ['GET', 'POST'])
-def website():
-    if request.method == "POST":
-        website  = request.form.get('')
-        db.session.add(website)
-        db.session.commit()
+    
