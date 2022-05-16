@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, url_for
+from flask import Blueprint, render_template, request, flash, url_for,redirect
 from flask_login import login_required, current_user
 from .models import User, Passwords
 from. import db
@@ -9,9 +9,7 @@ views = Blueprint('views',__name__)
 @views.route('/home', methods=['GET','POST'])
 # home will display our user info, this will also  display the passwords for the user and website they are using for the passwords
 def home():
-    if request.method == "POST":
-        return render_template('newuser.html',user=current_user)
-    return render_template('home.html', user= current_user)
+    return render_template('login.html', user= current_user)
 
 @views.route("/generate")
 
@@ -22,6 +20,7 @@ def userinfo():
 def generate_password():
     if request.method == "POST":
         website = request.form.get('website')
+
         
         website_exists = Passwords.query.filter_by(website=website).first()
         if website_exists:
