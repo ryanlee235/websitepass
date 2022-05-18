@@ -1,12 +1,10 @@
-from operator import ge
-from re import I
 from flask import Blueprint, request, session, url_for, flash
 from flask.templating import render_template
 from sqlalchemy.sql.functions import user
 from werkzeug.utils import redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
-from .models import User, Passwords
+from .models import User
 from flask_login import login_user,logout_user,login_required, current_user
 #setting up blueprint
 auth = Blueprint('auth', __name__)
@@ -21,13 +19,14 @@ def login():
         password = request.form.get("password")
 
         # we are looking in the database under the column email, and grabbing the first one 
-        email_exist = User.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=email).first()
 
-        if email_exist:
+        if user:
             #checking the password with the hash method
-            if check_password_hash(email_exist.Passwords, password):
+            if check_password_hash(user.Passwords, password):
                 #tell the user they have been logged in 
                 flash("Succefully logged in!", category="success")
+                login_user(user,remember=True)
                 #gets redirected to the home page/ user page
                 return redirect("/home")
             else:
@@ -39,9 +38,6 @@ def login():
     return render_template("login.html",user =current_user)
 
    
-
-
-    
 @auth.route("/newuser", methods = ["GET", "POST"])
 def new_user():
     if request.method =="POST":
@@ -75,6 +71,8 @@ def new_user():
             db.session.add(new_user)
             #have to commit the change so the change takes place
             db.session.commit()
+            login_user(email_exist,remember=True)
+            flash("account has been created!",category="success")
 
             
     
@@ -85,7 +83,7 @@ def new_user():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("login.html"))
+    return redirect(url_for("auth.login"))
 
 
 
