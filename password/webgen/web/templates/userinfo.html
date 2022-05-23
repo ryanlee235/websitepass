@@ -1,6 +1,30 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %}{% block content %}
 <body>
     <main>
-        
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Website/app</th>
+                <th scope="col">Passwords</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for data in ps1%}
+                <tr>
+                    <td>{{data.websites}}</td>
+                    <td>{{ data.user_passwords }}
+                      <div class="delete-btn">
+                      <a href="/delete/{{ data.id }}" class ="btn btn-primary">x</a> 
+                      </div>
+                  </td>
+                    
+                
+                
+                </tr>
+                {% endfor %}
+            </tbody>
+          </table>
     </main>
 </body>
+
+{% endblock %}

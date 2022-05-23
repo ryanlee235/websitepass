@@ -1,10 +1,11 @@
-from flask import Blueprint, render_template, request, flash, url_for,redirect
+from flask import Blueprint, render_template, request, flash, url_for,redirect, session
 from flask_login import login_required, current_user
 from .models import User, Passwords
 from. import db
 import random 
 import os 
 views = Blueprint('views',__name__)
+
 
 @views.route('/')
 @views.route('/home',methods = ['GET','POST'])
@@ -29,24 +30,34 @@ def home():
             password = ''.join(random.sample(all,length))
                 
             
-            password_gen = Passwords(password=password, website=website) 
+            password_gen = Passwords(websites=website, user_passwords=password)
             db.session.add(password_gen)
             db.session.commit()
             flash("password generated successfully",category="success")
 
+
     return render_template("home.html",user=current_user)
+
+
+@views.route("/userinfo")
+def display_info():
+    ps1 = Passwords.query.all()
+
+    return render_template("userinfo.html",ps1=ps1,user = current_user)
+   
         
 
-@views.route('/delete-password/<id>')
-def delete():
-    password = Passwords.query.filter_by(id=id).first()
+@views.route('/delete/<id>')
+@login_required
+def delete(id):
+   password_delete = Passwords.query.get_or_404(id)
+
+   try:
+       db.session.delete(password_delete)
+       db.session.commit()
+       return redirect("/userinfo")
+   except:
+        return "There was a problem delete the password"
+
     
-    if not password:
-        flash("password does not exist! ", category ="error")
-    elif current_user.id != password.id:
-        flash("you do not have permission to delete this password", category='error')
-    else:
-        db.session.delete(password)
-        db.session.commit()
-        flash("password successfully deleted! ")
-    
+
