@@ -1,6 +1,15 @@
 {% extends 'base.html' %}{% block content %}
 <body>
     <main>
+      <div class="content-section">
+        <div class="media">
+          <div class="media-body">
+            <h2 class="account-heading">{{ current_user.username }}</h2>
+          </div>
+        </div>
+      </div>
+      </div>
+      
         <table class="table">
             <thead>
               <tr>
@@ -9,7 +18,7 @@
               </tr>
             </thead>
             <tbody>
-                {% for data in ps1%}
+                {% for data in user.passwords %}
                 <tr>
                     <td>{{data.websites}}</td>
                     <td>{{ data.user_passwords }}
@@ -21,6 +30,7 @@
                 
                 
                 </tr>
+                
                 {% endfor %}
             </tbody>
           </table>

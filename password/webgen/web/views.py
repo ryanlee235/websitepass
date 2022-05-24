@@ -12,10 +12,12 @@ views = Blueprint('views',__name__)
 @login_required
 def home():
     if request.method == "POST":
+        
         website = request.form.get("website")
         if len(website) < 1:
             flash("please enter a website name to generate password!", category="error")
         else:
+            passwords = current_user.id
             upper_letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
             lower_letters = upper_letters.lower()
             symbols ='!@#$%^&*()?<>/:;'
@@ -30,7 +32,7 @@ def home():
             password = ''.join(random.sample(all,length))
                 
             
-            password_gen = Passwords(websites=website, user_passwords=password)
+            password_gen = Passwords(websites=website, user_passwords=password, password_id=passwords)
             db.session.add(password_gen)
             db.session.commit()
             flash("password generated successfully",category="success")
@@ -38,14 +40,13 @@ def home():
 
     return render_template("home.html",user=current_user)
 
-
-@views.route("/userinfo")
+        
+@views.route('/userinfo', methods = ['GET','POST'])
 def display_info():
     ps1 = Passwords.query.all()
 
     return render_template("userinfo.html",ps1=ps1,user = current_user)
-   
-        
+
 
 @views.route('/delete/<id>')
 @login_required
